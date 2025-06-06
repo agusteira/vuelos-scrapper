@@ -6,7 +6,8 @@ class Vuelos:
     CURSOR = CONN.cursor()
 
     def __init__(self, DateTime, FechaSalida, HoraSalida, HoraLlegada,
-                 LugarSalida, LugarDestino, Precio1, Precio2):
+                 LugarSalida, LugarDestino, Precio1, Precio2,
+                 IdTrackRace, nombreUsuario, TipoVuelo):
         self.DateTime = DateTime
         self.FechaSalida = FechaSalida
         self.HoraSalida = HoraSalida
@@ -15,6 +16,9 @@ class Vuelos:
         self.LugarDestino = LugarDestino
         self.Precio1 = Precio1
         self.Precio2 = Precio2
+        self.IdTrackRace = IdTrackRace
+        self.nombreUsuario = nombreUsuario
+        self.TipoVuelo = TipoVuelo
 
     @classmethod
     def crear_tabla(cls):
@@ -28,7 +32,10 @@ class Vuelos:
                 lugar_salida TEXT,
                 lugar_destino TEXT,
                 precio1 REAL,
-                precio2 REAL
+                precio2 REAL,
+                id_track_race TEXT,
+                nombre_usuario TEXT,
+                tipo_vuelo TEXT
             )
         """)
         cls.CONN.commit()
@@ -38,11 +45,13 @@ class Vuelos:
             """
             INSERT INTO vuelos (
                 datetime, fecha_salida, hora_salida, hora_llegada,
-                lugar_salida, lugar_destino, precio1, precio2
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                lugar_salida, lugar_destino, precio1, precio2,
+                id_track_race, nombre_usuario, tipo_vuelo
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (self.DateTime, self.FechaSalida, self.HoraSalida,
                   self.HoraLlegada, self.LugarSalida, self.LugarDestino,
-                  self.Precio1, self.Precio2))
+                  self.Precio1, self.Precio2,
+                  self.IdTrackRace, self.nombreUsuario, self.TipoVuelo))
         self.CONN.commit()
 
     def leer(self):
