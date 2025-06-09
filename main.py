@@ -22,10 +22,12 @@ if html:
     html = scraper.parse(html)
     html = AerolineasArgentinasScrapper.ObtenerHtmlDeAerolineasArgentinas(html)
     html = html[0] if html else None 
-    html = AerolineasArgentinasScrapper.TransformaHtmlEnObjeto(html)
-    #print(html[0])  # Mostrar HTML parseado
-    #vuelo = scraper.parseAerolineasArgentinas(html)
-    #print(soup.prettify())  # Mostrar HTML parseado
+    listaDeVuelos = AerolineasArgentinasScrapper.TransformaHtmlEnObjeto(html)
+    listaVuelosBaratos= AerolineasArgentinasScrapper.GenerarOfertaDeVuelos(listaDeVuelos)
+    for vuelo in listaVuelosBaratos:
+        AerolineasArgentinasScrapper.mostrar_vuelo(f"Vuelo de {vuelo.TipoVuelo} más barato", vuelo)
+        if EN_LINEA:
+            vuelo.crear()
 
 Vuelos.leer_todo()
 
