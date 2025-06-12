@@ -3,6 +3,7 @@ from zoneinfo import ZoneInfo
 import uuid
 from variables import *
 from VuelosObj import Vuelos
+import re
 
 class AerolineasArgentinasScrapper:
     def __init__(self):
@@ -63,41 +64,51 @@ class AerolineasArgentinasScrapper:
         
         return listaVuelos
 
+    
     @classmethod
-    def mostrar_vuelo(self, titulo, vuelo):
-            print(f"\n{titulo}\n")
-            print(f"Fecha: {vuelo.FechaSalida}")
-            print(f"Hora de Salida: {vuelo.HoraSalida}")
-            print(f"Hora de Llegada: {vuelo.HoraLlegada}")
-            print(f"Lugar de Salida: {vuelo.LugarSalida}")
-            print(f"Lugar de Destino: {vuelo.LugarDestino}")
-            print(f"Precio 1: ${float(vuelo.Precio1):.3f}")
-            print(f"Precio 2: ${float(vuelo.Precio2):.3f}")
-            print("-" * 40)
-
-
+    def GenerarUrl(self, origen, destino, fechaIda, fechaVuelta, fechaFlexible=False):
+        ida= "{origen}-{destino}-{fechaIda}".format(
+            origen=origen, 
+            destino=destino, 
+            fechaIda=fechaIda#fechaIda.strftime("%Y%m%d")
+        )
+        vuelta = "{destino}-{origen}-{fechaVuelta}".format(
+            origen=origen, 
+            destino=destino, 
+            fechaVuelta=fechaVuelta#fechaVuelta.strftime("%Y%m%d")
+        )
+        #
+        if(fechaFlexible):
+            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_FLEXIBLE"]}&leg={ida}&leg={vuelta}"
+        else:
+            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_ESPECIFICA"]}&leg={ida}&leg={vuelta}"
+        return url_base
+    
     @classmethod
-    def GenerarOfertaDeVuelos(cls, listaDeVuelos):
-        comboVuelosBaratos =[]
-        if not listaDeVuelos:
-            print("No se encontraron vuelos.")
-            return
+    def ObtenerOfertaMasBarata(self, html):
+        ida = html.find_all("div", class_="styled__Column-sc-1jsfikw-2 hmBpDW fdc-from-box")
+        vuelta = html.find_all("div", class_="styled__Column-sc-1jsfikw-2 hmBpDW fdc-to-box")
 
-        vuelosIda = [p for p in listaDeVuelos if p.TipoVuelo.strip().lower() == "ida"]
-        vuelosVuelta = [p for p in listaDeVuelos if p.TipoVuelo.strip().lower() == "vuelta"]
-
-        if not vuelosIda:
-            print("No se encontraron vuelos de ida.")
-            return
-        if not vuelosVuelta:
-            print("No se encontraron vuelos de vuelta.")
-            return
-
-        vuelo_ida = min(vuelosIda, key=lambda p: float(p.Precio1))
-        vuelo_vuelta = min(vuelosVuelta, key=lambda p: float(p.Precio1))
-        comboVuelosBaratos =[vuelo_ida, vuelo_vuelta]
-
-        total = float(vuelo_ida.Precio1) + float(vuelo_vuelta.Precio1)
-        print(f"\nPrecio paquete ida y vuelta: ${total:.3f}")
+        arrayTodosLosPreciosDeIda = ida[0].find_all("div", class_="styled__Price-sc-ty299w-0 erKuJO fdc-button-price")
+        arrayTodosLosPreciosDeVuelta = vuelta[0].find_all("div", class_="styled__Price-sc-ty299w-0 erKuJO fdc-button-price")
         
-        return comboVuelosBaratos
+        precioIda = self.ObtenerVueloMasBaratoDeUnArrayDePrecios(arrayTodosLosPreciosDeIda)
+        precioVuelta = self.ObtenerVueloMasBaratoDeUnArrayDePrecios(arrayTodosLosPreciosDeVuelta)
+
+
+        return [precioIda, precioVuelta]
+        #print(ida)
+    
+    def ObtenerVueloMasBaratoDeUnArrayDePrecios(arrayTodosLosPrecios):
+        precios_numericos = []
+
+        for precio in arrayTodosLosPrecios:
+            texto = precio.get_text(strip=True)
+            numero = re.sub(r"[^\d]", "", texto)
+            if numero:
+                precios_numericos.append(int(numero))
+
+        if precios_numericos:
+            precio_minimo = min(precios_numericos)
+            return precio_minimo
+        

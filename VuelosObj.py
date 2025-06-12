@@ -81,3 +81,43 @@ class Vuelos:
         self.CURSOR.execute("DELETE FROM vuelos WHERE datetime = ?",
                             (self.DateTime, ))
         self.CONN.commit()
+
+    @classmethod
+    def mostrar_vuelo(self, titulo, vuelo):
+            print("-" * 40)
+            print(f"\n{titulo}\n")
+            print(f"Fecha: {vuelo.FechaSalida}")
+            print(f"Hora de Salida: {vuelo.HoraSalida}")
+            print(f"Hora de Llegada: {vuelo.HoraLlegada}")
+            print(f"Lugar de Salida: {vuelo.LugarSalida}")
+            print(f"Lugar de Destino: {vuelo.LugarDestino}")
+            print(f"Precio 1: ${float(vuelo.Precio1):.3f}")
+            print(f"Precio 2: ${float(vuelo.Precio2):.3f}")
+            print("-" * 40)
+
+
+    @classmethod
+    def GenerarOfertaDeVuelos(cls, listaDeVuelos):
+        comboVuelosBaratos =[]
+        if not listaDeVuelos:
+            print("No se encontraron vuelos.")
+            return
+
+        vuelosIda = [p for p in listaDeVuelos if p.TipoVuelo.strip().lower() == "ida"]
+        vuelosVuelta = [p for p in listaDeVuelos if p.TipoVuelo.strip().lower() == "vuelta"]
+
+        if not vuelosIda:
+            print("No se encontraron vuelos de ida.")
+            return
+        if not vuelosVuelta:
+            print("No se encontraron vuelos de vuelta.")
+            return
+
+        vuelo_ida = min(vuelosIda, key=lambda p: float(p.Precio1))
+        vuelo_vuelta = min(vuelosVuelta, key=lambda p: float(p.Precio1))
+        comboVuelosBaratos =[vuelo_ida, vuelo_vuelta]
+
+        total = float(vuelo_ida.Precio1) + float(vuelo_vuelta.Precio1)
+        print(f"\nPrecio paquete para ese dia ida y vuelta: ${total:.3f}")
+        
+        return comboVuelosBaratos

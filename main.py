@@ -10,9 +10,34 @@ from variables import *
 Vuelos.crear_tabla()
 
 scraper = WebScraper()
+
+
+print("Buscando vuelos con fecha flexible...")
 if EN_LINEA:
-    url = "https://www.aerolineas.com.ar/flights-offers?adt=1&inf=0&chd=0&flexDates=false&cabinClass=Economy&flightType=ROUND_TRIP&leg=BUE-CPC-20251206&leg=CPC-BUE-20251213"
-    html = scraper.scrape(url)
+    url = AerolineasArgentinasScrapper.GenerarUrl(AEROPUERTOS_IDA, AEROPUERTOS_VUELTA, FECHA_IDA, FECHA_VUELTA, True)
+    html = scraper.scrape(url, True)
+    scraper.guardar_archivo_html("pagina_scrapeada_fecha_flexible.html", html)
+else:
+    html = scraper.leer_archivo_html("pagina_scrapeada_fecha_flexible.html")
+
+if html:
+    html = scraper.parse(html)
+    html = AerolineasArgentinasScrapper.ObtenerHtmlDeAerolineasArgentinas(html)
+    html = html[0] if html else None 
+    ofertasFlexibles = AerolineasArgentinasScrapper.ObtenerOfertaMasBarata(html)
+    totalFechaFlexible = sum(oferta for oferta in ofertasFlexibles)
+    precio_formateado = f"{totalFechaFlexible:,}".replace(",", ".")
+    print(f"\nPrecio paquete mas baratos en fechas cercanas: ${precio_formateado}")
+    print(f"Ida: ${ofertasFlexibles[0]:,}, Vuelta: {ofertasFlexibles[1]:,}".replace(",", "."))
+
+
+
+#=======================================================================================
+print("-" * 100)
+print("\nBuscando vuelos con fecha específica...")
+if EN_LINEA:
+    url = AerolineasArgentinasScrapper.GenerarUrl(AEROPUERTOS_IDA, AEROPUERTOS_VUELTA, FECHA_IDA, FECHA_VUELTA, False)
+    html = scraper.scrape(url, False)
     scraper.guardar_archivo_html("pagina_scrapeada.html", html)
 else:
     html = scraper.leer_archivo_html("pagina_scrapeada.html")
@@ -23,31 +48,10 @@ if html:
     html = AerolineasArgentinasScrapper.ObtenerHtmlDeAerolineasArgentinas(html)
     html = html[0] if html else None 
     listaDeVuelos = AerolineasArgentinasScrapper.TransformaHtmlEnObjeto(html)
-    listaVuelosBaratos= AerolineasArgentinasScrapper.GenerarOfertaDeVuelos(listaDeVuelos)
+    listaVuelosBaratos= Vuelos.GenerarOfertaDeVuelos(listaDeVuelos)
     for vuelo in listaVuelosBaratos:
-        AerolineasArgentinasScrapper.mostrar_vuelo(f"Vuelo de {vuelo.TipoVuelo} más barato", vuelo)
+        Vuelos.mostrar_vuelo(f"Vuelo de {vuelo.TipoVuelo} más barato", vuelo)
         if EN_LINEA:
             vuelo.crear()
 
-Vuelos.leer_todo()
-
-'''
-
-
-# Insertar datos
-ahora = datetime.now(ZoneInfo("America/Argentina/Buenos_Aires")).strftime("%Y-%m-%dT%H:%M:%S")
-
-vuelo_obj = Vuelos(DateTime= ahora,
-                                  FechaSalida="2025-07-01",
-                                  HoraSalida="08:00",
-                                  HoraLlegada="14:00",
-                                  LugarSalida="Buenos Aires",
-                                  LugarDestino="Miami",
-                                  Precio1=105000.00,
-                                  Precio2=125000.00)
-
-
-# Consultar
-vuelo_obj.crear()
-Vuelos.leer_todo()
-'''
+#Vuelos.leer_todo()
