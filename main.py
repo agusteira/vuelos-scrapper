@@ -11,6 +11,8 @@ Vuelos.crear_tabla()
 
 scraper = WebScraper()
 
+hora_actual = datetime.now().strftime("%H:%M:%S")
+print("La hora actual es:", hora_actual)
 
 print("Buscando vuelos con fecha flexible...")
 if EN_LINEA:

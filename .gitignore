@@ -1,0 +1,23 @@
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log
+
+# Carpeta de datos (si no querés subir datos pesados)
+data/
+
+# Archivos de configuración local
+*.env
+*vuelos.db
