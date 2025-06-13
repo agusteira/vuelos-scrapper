@@ -15,7 +15,10 @@ class WebScraper:
 
     def scrape(self, url, fechaFlexible):
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            if RAILWAY_STATE:
+                browser = p.chromium.connect(BROWSER_PLAYWRIGHT_ENDPOINT)
+            else:
+                browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(url)
 

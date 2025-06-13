@@ -1,4 +1,6 @@
 EN_LINEA = True
+RAILWAY_STATE= True
+BROWSER_PLAYWRIGHT_ENDPOINT= "wss://browserless-production-4525.up.railway.app/chromium/playwright?token=yo9Xq7GrwzZ6YwYWxbK2wG9Tz7g3t3gObNYFFlKxyAnqDYfO"
 
 NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS = {
     "URL_BASE_FECHA_FLEXIBLE": "https://www.aerolineas.com.ar/flex-dates-calendar?adt=1&inf=0&chd=0&flexDates=true&cabinClass=Economy&flightType=ROUND_TRIP",
