@@ -21,9 +21,9 @@ class WebScraper:
 
             # Espera a que cargue algún elemento clave (evita capturar una página vacía)
             if fechaFlexible:
-                page.wait_for_selector("div.styled__ComponentWrapper-sc-1jsfikw-0", timeout=60000)
+                page.wait_for_selector("div.styled__ComponentWrapper-sc-1jsfikw-0", timeout=600000)
             if not fechaFlexible:
-                page.wait_for_selector("label.styled__Fare-sc-l1i8es-3", timeout=60000)
+                page.wait_for_selector("label.styled__Fare-sc-l1i8es-3", timeout=600000)
 
             # Obtener el HTML final ya renderizado
             html = page.content()
