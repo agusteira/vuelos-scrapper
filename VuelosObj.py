@@ -1,5 +1,6 @@
 import sqlite3
-
+from variables import *
+from telebot import telebot
 
 class Vuelos:
     CONN = sqlite3.connect("vuelos.db")
@@ -84,16 +85,22 @@ class Vuelos:
 
     @classmethod
     def mostrar_vuelo(self, titulo, vuelo):
-            print("-" * 40)
-            print(f"\n{titulo}\n")
-            print(f"Fecha: {vuelo.FechaSalida}")
-            print(f"Hora de Salida: {vuelo.HoraSalida}")
-            print(f"Hora de Llegada: {vuelo.HoraLlegada}")
-            print(f"Lugar de Salida: {vuelo.LugarSalida}")
-            print(f"Lugar de Destino: {vuelo.LugarDestino}")
-            print(f"Precio 1: ${float(vuelo.Precio1):.3f}")
-            print(f"Precio 2: ${float(vuelo.Precio2):.3f}")
-            print("-" * 40)
+        bot = telebot.TeleBot(TOKEN_BOT)
+        mensaje = (
+            "-" * 40 + "\n"
+            f"\n{titulo}\n"
+            f"Fecha: {vuelo.FechaSalida}\n"
+            f"Hora de Salida: {vuelo.HoraSalida}\n"
+            f"Hora de Llegada: {vuelo.HoraLlegada}\n"
+            f"Lugar de Salida: {vuelo.LugarSalida}\n"
+            f"Lugar de Destino: {vuelo.LugarDestino}\n"
+            f"Precio 1: ${float(vuelo.Precio1):.3f}\n"
+            f"Precio 2: ${float(vuelo.Precio2):.3f}\n"
+            + "-" * 40
+        )
+        print(mensaje)
+        bot.send_message(CHAT_ID, mensaje)
+              
 
 
     @classmethod
@@ -119,5 +126,7 @@ class Vuelos:
 
         total = float(vuelo_ida.Precio1) + float(vuelo_vuelta.Precio1)
         print(f"\nPrecio paquete para ese dia ida y vuelta: ${total:.3f}")
-        
+
+        bot = telebot.TeleBot(TOKEN_BOT)
+        bot.send_message(CHAT_ID, f"\nPrecio paquete para ese dia ida y vuelta: ${total:.3f}")
         return comboVuelosBaratos

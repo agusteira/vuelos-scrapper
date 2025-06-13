@@ -5,12 +5,13 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from Scraper import WebScraper
 from variables import *
+from telebot import telebot
 
 # Crear DB y tabla
 Vuelos.crear_tabla()
 
 scraper = WebScraper()
-
+bot = telebot.TeleBot(TOKEN_BOT)
 hora_actual = datetime.now().strftime("%H:%M:%S")
 print("La hora actual es:", hora_actual)
 
@@ -31,7 +32,7 @@ if html:
     precio_formateado = f"{totalFechaFlexible:,}".replace(",", ".")
     print(f"\nPrecio paquete mas baratos en fechas cercanas: ${precio_formateado}")
     print(f"Ida: ${ofertasFlexibles[0]:,}, Vuelta: {ofertasFlexibles[1]:,}".replace(",", "."))
-
+    bot.send_message(CHAT_ID, f"\nPrecio paquete mas baratos en fechas cercanas: ${precio_formateado}")
 
 
 #=======================================================================================
@@ -56,4 +57,6 @@ if html:
         if EN_LINEA:
             vuelo.crear()
 
-#Vuelos.leer_todo()
+
+#=======================================================================================
+
