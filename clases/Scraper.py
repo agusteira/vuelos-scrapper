@@ -7,12 +7,13 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from variables import *
-from VuelosObj import Vuelos
+from clases.VuelosObj import Vuelos
 
 class WebScraper:
     def __init__(self):
         pass 
-
+    
+    @classmethod
     def scrape(self, url, fechaFlexible):
         with sync_playwright() as p:
             if RAILWAY_STATE:
@@ -33,7 +34,8 @@ class WebScraper:
             browser.close()
 
             return html
-        
+    
+    @classmethod
     def guardar_archivo_html(self, ruta_archivo, contenido):
         try:
             with open(ruta_archivo, "w", encoding="utf-8") as file:
@@ -41,6 +43,7 @@ class WebScraper:
         except Exception as e:
             print(f"Error al guardar el archivo: {e}")
 
+    @classmethod
     def leer_archivo_html(self, ruta_archivo):
         try:
             with open(ruta_archivo, "r", encoding="utf-8") as file:
@@ -50,6 +53,7 @@ class WebScraper:
             print(f"Error al leer el archivo: {e}")
             return None
 
+    @classmethod
     def parse(self, html):
         soup = BeautifulSoup(html, "html.parser")
         return soup

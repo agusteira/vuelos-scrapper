@@ -66,6 +66,30 @@ class Vuelos:
         for row in Vuelos.CURSOR.fetchall():
             print(row)
 
+    @classmethod
+    def traer_ultima_oferta(cls, track_race_id, suma_total):
+        cls.CURSOR.execute(
+            """
+            SELECT precio1 FROM vuelos 
+            WHERE id_track_race = ? 
+            ORDER BY datetime DESC 
+            LIMIT 2
+            """, 
+            (track_race_id,)
+        )
+        resultados = cls.CURSOR.fetchall()
+
+        precios = [float(row[0]) for row in resultados]
+        suma_precios = sum(precios)
+
+        if suma_precios == suma_total:
+            return False
+        else:
+            return True
+
+
+
+
     def actualizar(self, nuevo_precio1=None, nuevo_precio2=None):
         if nuevo_precio1 is not None:
             self.Precio1 = nuevo_precio1
@@ -84,8 +108,7 @@ class Vuelos:
         self.CONN.commit()
 
     @classmethod
-    def mostrar_vuelo(self, titulo, vuelo):
-        bot = telebot.TeleBot(TOKEN_BOT)
+    def mostrar_vuelo(self, titulo, vuelo, bot, IdChatTelegram):
         mensaje = (
             "-" * 40 + "\n"
             f"\n{titulo}\n"
@@ -99,9 +122,7 @@ class Vuelos:
             + "-" * 40
         )
         print(mensaje)
-        bot.send_message(CHAT_ID, mensaje)
-              
-
+        if EN_LINEA: bot.send_message(IdChatTelegram, mensaje)
 
     @classmethod
     def GenerarOfertaDeVuelos(cls, listaDeVuelos):
@@ -123,10 +144,4 @@ class Vuelos:
         vuelo_ida = min(vuelosIda, key=lambda p: float(p.Precio1))
         vuelo_vuelta = min(vuelosVuelta, key=lambda p: float(p.Precio1))
         comboVuelosBaratos =[vuelo_ida, vuelo_vuelta]
-
-        total = float(vuelo_ida.Precio1) + float(vuelo_vuelta.Precio1)
-        print(f"\nPrecio paquete para ese dia ida y vuelta: ${total:.3f}")
-
-        bot = telebot.TeleBot(TOKEN_BOT)
-        bot.send_message(CHAT_ID, f"\nPrecio paquete para ese dia ida y vuelta: ${total:.3f}")
         return comboVuelosBaratos

@@ -16,8 +16,9 @@ Thumbs.db
 *.log
 
 # Carpeta de datos (si no querés subir datos pesados)
-data/
+htmls/
 
 # Archivos de configuración local
 *.env
 *vuelos.db
+# *busquedas.db
