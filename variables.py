@@ -1,5 +1,5 @@
 EN_LINEA = True
-RAILWAY_STATE= False
+RAILWAY_STATE= True
 BROWSER_PLAYWRIGHT_ENDPOINT= "wss://browserless-production-4525.up.railway.app/chromium/playwright?token=yo9Xq7GrwzZ6YwYWxbK2wG9Tz7g3t3gObNYFFlKxyAnqDYfO"
 TOKEN_BOT = "7664414478:AAE_gva6Vddedr-kOJXDq0gUtTL-iuP9S6M"
 
