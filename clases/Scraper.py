@@ -20,7 +20,21 @@ class WebScraper:
                 browser = p.chromium.connect(BROWSER_PLAYWRIGHT_ENDPOINT)
             else:
                 browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
+            context = browser.new_context()
+            page = context.new_page()
+
+            jwt_tokens = []
+
+            # Interceptar requests salientes
+            def on_request(request):
+                auth_header = request.headers.get("authorization")
+                if auth_header and "Bearer " in auth_header:
+                    token = WebScraper.extract_jwt(auth_header)
+                    if token and token not in jwt_tokens:
+                        jwt_tokens.append(token)
+
+            page.on("request", on_request)
+
             page.goto(url)
 
             # Espera a que cargue algún elemento clave (evita capturar una página vacía)
@@ -33,8 +47,16 @@ class WebScraper:
             html = page.content()
             browser.close()
 
+            for token in jwt_tokens:
+                print(f"Token JWT encontrado: {token}")
+
             return html
     
+    @classmethod
+    def extract_jwt(cls, header_value):
+        match = re.match(r"Bearer\s+(.+)", header_value)
+        return match.group(1) if match else None
+
     @classmethod
     def guardar_archivo_html(self, ruta_archivo, contenido):
         try:
