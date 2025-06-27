@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup
 import re
 from playwright.sync_api import sync_playwright

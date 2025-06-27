@@ -78,6 +78,24 @@ class AerolineasArgentinasScrapper:
         #
         return f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_API"]}&leg={ida}&leg={vuelta}"
 
+    @classmethod
+    def GenerarUrl(self, origen, destino, fechaIda, fechaVuelta, fechaFlexible=False):
+        ida= "{origen}-{destino}-{fechaIda}".format(
+            origen=origen, 
+            destino=destino, 
+            fechaIda=datetime.strptime(fechaIda, "%Y-%m-%d").strftime("%Y%m%d")
+        )
+        vuelta = "{destino}-{origen}-{fechaVuelta}".format(
+            origen=origen, 
+            destino=destino, 
+            fechaVuelta=datetime.strptime(fechaVuelta, "%Y-%m-%d").strftime("%Y%m%d")
+        )
+        #
+        if(fechaFlexible):
+            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_FLEXIBLE"]}&leg={ida}&leg={vuelta}"
+        else:
+            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_ESPECIFICA"]}&leg={ida}&leg={vuelta}"
+        return url_base
 
     @classmethod
     def ObtenerOfertaMasBarata(self, html):
