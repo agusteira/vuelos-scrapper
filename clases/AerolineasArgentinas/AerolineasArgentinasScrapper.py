@@ -63,9 +63,8 @@ class AerolineasArgentinasScrapper:
         
         return listaVuelos
 
-    
-    @classmethod
-    def GenerarUrl(self, origen, destino, fechaIda, fechaVuelta, fechaFlexible=False):
+    @staticmethod
+    def GenerarUrlApi(origen, destino, fechaIda, fechaVuelta):
         ida= "{origen}-{destino}-{fechaIda}".format(
             origen=origen, 
             destino=destino, 
@@ -77,12 +76,9 @@ class AerolineasArgentinasScrapper:
             fechaVuelta=datetime.strptime(fechaVuelta, "%Y-%m-%d").strftime("%Y%m%d")
         )
         #
-        if(fechaFlexible):
-            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_FLEXIBLE"]}&leg={ida}&leg={vuelta}"
-        else:
-            url_base = f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_BASE_FECHA_ESPECIFICA"]}&leg={ida}&leg={vuelta}"
-        return url_base
-    
+        return f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_API"]}&leg={ida}&leg={vuelta}"
+
+
     @classmethod
     def ObtenerOfertaMasBarata(self, html):
         ida = html.find_all("div", class_=NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["PRECIOS_IDA_FLEXIBLE"])
@@ -110,4 +106,83 @@ class AerolineasArgentinasScrapper:
         if precios_numericos:
             precio_minimo = min(precios_numericos)
             return precio_minimo
-        
+    
+    @staticmethod
+    def generar_mensaje_oferta_con_fechas(json_data, fecha_ida_fija, fecha_vuelta_fija, idTrackRace, nombreUsuario):
+        def buscar_por_fecha(ofertas, fecha_deseada):
+            for item in ofertas:
+                if item.get("departure") == fecha_deseada and item.get("offerDetails") and not item.get("soldOut"):
+                    return item
+            return None
+
+        def obtener_mejor_oferta(ofertas):
+            mejores = []
+            for item in ofertas:
+                if item.get("offerDetails") and not item.get("soldOut"):
+                    total = item["offerDetails"]["fare"]["total"]
+                    mejores.append((total, item))
+            return min(mejores, key=lambda x: x[0])[1] if mejores else None
+
+        def formatear(oferta, tipo):
+            seg = oferta["leg"]["segments"][0]
+            fecha_fmt = datetime.strptime(oferta["departure"], "%Y-%m-%d").strftime("%d/%m/%Y")
+            vuelo = seg["flightNumber"]
+            salida = seg["departure"].split("T")[1][:5]
+            llegada = seg["arrival"].split("T")[1][:5]
+            origen = seg["origin"]
+            destino = seg["destination"]
+            precio = oferta["offerDetails"]["fare"]["total"]
+            return (
+                f"*{tipo}* ({fecha_fmt}) - Vuelo {seg['airline']}{vuelo}\n"
+                f"{origen} {salida} → {destino} {llegada} | 💰 ${precio:,.0f}".replace(",", ".")
+            )
+
+        ida_ofertas = json_data.get("calendarOffers", {}).get("0", [])
+        vuelta_ofertas = json_data.get("calendarOffers", {}).get("1", [])
+
+        mejor_ida = obtener_mejor_oferta(ida_ofertas)
+        mejor_vuelta = obtener_mejor_oferta(vuelta_ofertas)
+
+        fija_ida = buscar_por_fecha(ida_ofertas, fecha_ida_fija)
+        fija_vuelta = buscar_por_fecha(vuelta_ofertas, fecha_vuelta_fija)
+
+        if not mejor_ida or not mejor_vuelta:
+            return "❌ No hay suficientes datos para calcular el mejor combo.", []
+
+        mejor_total = mejor_ida["offerDetails"]["fare"]["total"] + mejor_vuelta["offerDetails"]["fare"]["total"]
+        mensaje = f"💸 *Combo más barato encontrado:* ${mejor_total:,.0f}".replace(",", ".")
+
+        vuelos = []
+        if fija_ida and fija_vuelta:
+            total_fijo = fija_ida["offerDetails"]["fare"]["total"] + fija_vuelta["offerDetails"]["fare"]["total"]
+            mensaje += (
+                f"\n\n📅 *Combo para fechas fijas:*\n"
+                f"{formatear(fija_ida, 'IDA')}\n"
+                f"{formatear(fija_vuelta, 'VUELTA')}\n"
+                f"🔢 *Total fijo:* ${total_fijo:,.0f}".replace(",", ".")
+            )
+
+            horaActual = datetime.now(ZoneInfo("America/Argentina/Buenos_Aires")).strftime("%Y-%m-%dT%H:%M:%S")
+            def crear_vuelo(oferta, tipo):
+                seg = oferta["leg"]["segments"][0]
+                return Vuelos(
+                    DateTime=horaActual,
+                    FechaSalida=oferta["departure"],
+                    HoraSalida=seg["departure"].split("T")[1][:5],
+                    HoraLlegada=seg["arrival"].split("T")[1][:5],
+                    LugarSalida=seg["origin"],
+                    LugarDestino=seg["destination"],
+                    Precio1=oferta["offerDetails"]["fare"]["total"],
+                    Precio2=0,
+                    IdTrackRace=idTrackRace,
+                    nombreUsuario=nombreUsuario,
+                    TipoVuelo=tipo
+                )
+
+            vuelos.append(crear_vuelo(fija_ida, "IDA"))
+            vuelos.append(crear_vuelo(fija_vuelta, "VUELTA"))
+
+        else:
+            mensaje += "\n\n❗ Alguna de las fechas fijas no tiene oferta disponible."
+
+        return mensaje, vuelos

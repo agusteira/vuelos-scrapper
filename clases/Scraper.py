@@ -1,11 +1,7 @@
-import requests
+
 from bs4 import BeautifulSoup
-import json
 import re
 from playwright.sync_api import sync_playwright
-import time
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from variables import *
 from clases.VuelosObj import Vuelos
 
@@ -58,7 +54,7 @@ class WebScraper:
         return match.group(1) if match else None
 
     @classmethod
-    def guardar_archivo_html(self, ruta_archivo, contenido):
+    def guardar_archivo(self, ruta_archivo, contenido):
         try:
             with open(ruta_archivo, "w", encoding="utf-8") as file:
                 file.write(contenido)
@@ -66,7 +62,7 @@ class WebScraper:
             print(f"Error al guardar el archivo: {e}")
 
     @classmethod
-    def leer_archivo_html(self, ruta_archivo):
+    def leer_archivo(self, ruta_archivo):
         try:
             with open(ruta_archivo, "r", encoding="utf-8") as file:
                 contenido = file.read()
@@ -79,3 +75,4 @@ class WebScraper:
     def parse(self, html):
         soup = BeautifulSoup(html, "html.parser")
         return soup
+
