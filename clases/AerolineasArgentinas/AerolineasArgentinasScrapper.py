@@ -78,8 +78,8 @@ class AerolineasArgentinasScrapper:
         #
         return f"{NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS["URL_API"]}&leg={ida}&leg={vuelta}"
 
-    @classmethod
-    def GenerarUrl(self, origen, destino, fechaIda, fechaVuelta, fechaFlexible=False):
+    @staticmethod
+    def GenerarUrl(origen, destino, fechaIda, fechaVuelta, fechaFlexible=False):
         ida= "{origen}-{destino}-{fechaIda}".format(
             origen=origen, 
             destino=destino, 

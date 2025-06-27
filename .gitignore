@@ -22,4 +22,5 @@ jsons/
 # Archivos de configuración local
 *.env
 *vuelos.db
+*tokens.db
 # *busquedas.db

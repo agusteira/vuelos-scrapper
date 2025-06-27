@@ -1,14 +1,9 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import re
-
 from zoneinfo import ZoneInfo
-from clases.AerolineasArgentinas import AerolineasArgentinasScrapper
+from clases.AerolineasArgentinas.AerolineasArgentinasScrapper import AerolineasArgentinasScrapper
 from clases.Scraper import WebScraper
-
-import re
 from playwright.sync_api import sync_playwright
-
 from zoneinfo import ZoneInfo
 from variables import *
 from clases.TokensObj import Tokens
