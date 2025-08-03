@@ -1,9 +1,9 @@
 import sqlite3
-from variables import *
+from settings.variables import *
 from telebot import telebot
 
 class Vuelos:
-    CONN = sqlite3.connect("vuelos.db")
+    CONN = sqlite3.connect("database/vuelos.db")
     CURSOR = CONN.cursor()
 
     def __init__(self, DateTime, FechaSalida, HoraSalida, HoraLlegada,

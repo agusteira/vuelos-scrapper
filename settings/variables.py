@@ -1,5 +1,6 @@
 EN_LINEA = True
 RAILWAY_STATE= False
+PRODUCCION = False
 
 NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS = {
     "URL_API": "https://api.aerolineas.com.ar/v1/flights/offers?adt=1&inf=0&chd=0&flexDates=true&cabinClass=Economy&flightType=ROUND_TRIP",

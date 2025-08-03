@@ -1,8 +1,8 @@
 import sqlite3
-from variables import *
+from settings.variables import *
 
 class Tokens:
-    CONN = sqlite3.connect("tokens.db")
+    CONN = sqlite3.connect("database/tokens.db")
     CURSOR = CONN.cursor()
 
     def __init__(self, DateTime, Token, FechaExpiracion, Aerolinea):

@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from clases.Scraper import WebScraper
-from variables import *
+from settings.variables import *
 from telebot import telebot
 import requests
 import json

@@ -5,7 +5,8 @@ from clases.AerolineasArgentinas.AerolineasArgentinasScrapper import AerolineasA
 from clases.Scraper import WebScraper
 from playwright.sync_api import sync_playwright
 from zoneinfo import ZoneInfo
-from variables import *
+from settings.variables import *
+from settings.security import *
 from clases.TokensObj import Tokens
 import jwt as pyjwt
 

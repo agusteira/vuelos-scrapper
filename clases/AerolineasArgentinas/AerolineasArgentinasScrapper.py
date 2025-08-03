@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import uuid
-from variables import *
+from settings.variables import *
 from clases.VuelosObj import Vuelos
 import re
 
