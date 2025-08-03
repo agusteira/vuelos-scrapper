@@ -17,8 +17,11 @@ Thumbs.db
 
 # Carpeta de datos (si no querés subir datos pesados)
 htmls/
+jsons/
 
 # Archivos de configuración local
 *.env
 *vuelos.db
+*tokens.db
+*security.py
 # *busquedas.db
