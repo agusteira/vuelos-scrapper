@@ -1,5 +1,6 @@
 EN_LINEA = True
 RAILWAY_STATE= False
+PRODUCCION = False
 
 NOMBRES_DE_CLASES_AEROLINEAS_ARGENTINAS = {
     "URL_BASE_FECHA_FLEXIBLE": "https://www.aerolineas.com.ar/flex-dates-calendar?adt=1&inf=0&chd=0&flexDates=true&cabinClass=Economy&flightType=ROUND_TRIP",

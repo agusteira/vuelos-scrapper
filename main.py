@@ -4,7 +4,8 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from clases.Scraper import WebScraper
-from variables import *
+from settings.security import *
+from settings.variables import *
 from telebot import telebot
 from clases.BusquedaDeVuelos import BusquedaDeVuelos
 from clases.BusquedasObj import Busquedas

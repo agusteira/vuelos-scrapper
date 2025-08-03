@@ -1,9 +1,8 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import uuid
-from variables import *
 from clases.VuelosObj import Vuelos
 import re
+from settings.variables import *
 
 class AerolineasArgentinasScrapper:
     def __init__(self):

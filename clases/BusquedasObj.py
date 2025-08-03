@@ -1,9 +1,9 @@
 import sqlite3
-from variables import *
+from settings.variables import *
 from telebot import telebot
 
 class Busquedas:
-    CONN = sqlite3.connect("busquedas.db")
+    CONN = sqlite3.connect("database/busquedasProduccion.db" if PRODUCCION else "database/busquedasTest.db")
     CURSOR = CONN.cursor()
 
     def __init__(self, DateTime, IdChatTelegram, AepIda, AepVuelta, FechaIda, FechaVuelta, Active=True, id=None):

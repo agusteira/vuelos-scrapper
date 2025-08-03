@@ -6,7 +6,8 @@ from playwright.sync_api import sync_playwright
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from variables import *
+from settings.security import *
+from settings.variables import *
 from clases.VuelosObj import Vuelos
 
 class WebScraper:
