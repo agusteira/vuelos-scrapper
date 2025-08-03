@@ -27,6 +27,6 @@ for busqueda in busquedas:
         token = ObtenerTokenAA.obtener_token(busqueda.AepIda, busqueda.AepVuelta, busqueda.FechaIda, busqueda.FechaVuelta,)
         #BusquedaDeVuelos.ObtenerPreciosAerolineasArgentinas(bot,"BUE", "CPC", "2025-12-06", "2025-12-06", busqueda.id, busqueda.IdChatTelegram,token)
         BusquedaDeVuelos.ObtenerPreciosAerolineasArgentinas(bot, busqueda.AepIda, busqueda.AepVuelta, busqueda.FechaIda, busqueda.FechaVuelta, busqueda.id, busqueda.IdChatTelegram,token)
-if EN_LINEA: time.sleep(60)
+#if EN_LINEA: time.sleep(60)
 #=======================================================================================
 

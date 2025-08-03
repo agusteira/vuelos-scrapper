@@ -44,7 +44,7 @@ class ObtenerTokenAA:
             if RAILWAY_STATE:
                 browser = p.chromium.connect(BROWSER_PLAYWRIGHT_ENDPOINT)
             else:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
 

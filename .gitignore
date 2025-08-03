@@ -23,4 +23,5 @@ jsons/
 *.env
 *vuelos.db
 *tokens.db
+*security.py
 # *busquedas.db
