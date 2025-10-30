@@ -24,4 +24,5 @@ jsons/
 *vuelos.db
 *tokens.db
 *security.py
+*runDockerSilently.vbs
 # *busquedas.db
